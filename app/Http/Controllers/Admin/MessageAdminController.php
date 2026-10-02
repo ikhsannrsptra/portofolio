@@ -10,7 +10,8 @@ class MessageAdminController extends Controller
 {
     public function index()
     {
-        $messages = Message::latest()->get();
+        $messages = Message::latest()->paginate(10);
+
         $unreadCount = Message::where('is_read', false)->count();
 
         return view('admin.messages.index', compact('messages', 'unreadCount'));
@@ -38,12 +39,16 @@ class MessageAdminController extends Controller
     public function markAsRead(Message $message)
     {
         $message->update(['is_read' => true]);
-        return redirect()->route('admin.messages.index')->with('success', 'Pesan telah ditandai sebagai sudah dibaca.');
+
+        return redirect()->route('admin.messages.index')
+            ->with('success', 'Pesan telah ditandai sebagai sudah dibaca.');
     }
 
     public function destroy(Message $message)
     {
         $message->delete();
-        return redirect()->route('admin.messages.index')->with('success', 'Pesan berhasil dihapus.');
+
+        return redirect()->route('admin.messages.index')
+            ->with('success', 'Pesan berhasil dihapus.');
     }
 }
